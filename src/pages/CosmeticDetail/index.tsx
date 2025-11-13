@@ -8,18 +8,24 @@ import type { TCosmetic } from "@/types/TCosmetics";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuthStore } from "@/store/useAuthStore";
+import { purchaseCosmetic } from "@/services/purchase/buy";
 
 export default function CosmeticDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
+  const { user } = useAuthStore();
+
   const [cosmetic, setCosmetic] = useState<TCosmetic | null>(null);
   const [loading, setLoading] = useState(false);
+  const [buying, setBuying] = useState(false);
+
   async function fetchCosmetic() {
     try {
       setLoading(true);
       const data = await getCosmeticById(id || "");
-      console.log(data);
+      console.log("DETAIL COSMETIC", data);
       setCosmetic(data);
     } catch (error) {
       console.error("Erro ao buscar cosmético:", error);
@@ -31,12 +37,45 @@ export default function CosmeticDetailsPage() {
 
   useEffect(() => {
     if (!id) return;
-
     fetchCosmetic();
   }, [id]);
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handlePurchase = async () => {
+    if (!cosmetic) return;
+
+    if (!user) {
+      toast.error("Você precisa estar logado para adquirir um item.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setBuying(true);
+      const result = await purchaseCosmetic(cosmetic.id);
+
+      if (!result?.success) {
+        toast.error(result?.message || "Não foi possível concluir a compra.");
+        return;
+      }
+
+      toast.success(result.message || "Item adquirido com sucesso!");
+
+      setCosmetic((prev) =>
+        prev ? { ...prev, isOwned: true } : prev
+      );
+    } catch (error: any) {
+      console.error("Erro ao adquirir cosmético:", error);
+      const msg =
+        error?.response?.data?.message ||
+        "Erro ao tentar adquirir o item.";
+      toast.error(msg);
+    } finally {
+      setBuying(false);
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -83,7 +122,7 @@ export default function CosmeticDetailsPage() {
             Cosmético não encontrado.
           </div>
         ) : (
-          <Card className="overflow-hidden max-w-full ">
+          <Card className="overflow-hidden max-w-full">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-slate-900 flex items-center justify-center p-4 ml-4">
                 {cosmetic.imageUrl ? (
@@ -176,9 +215,22 @@ export default function CosmeticDetailsPage() {
                         Já adquirido
                       </Button>
                     ) : (
-                      <Button className="gap-2">
-                        <ShoppingBag className="w-4 h-4" />
-                        Adquirir
+                      <Button
+                        className="gap-2"
+                        onClick={handlePurchase}
+                        disabled={buying}
+                      >
+                        {buying ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Adquirindo...
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag className="w-4 h-4" />
+                            Adquirir
+                          </>
+                        )}
                       </Button>
                     )}
                   </div>
