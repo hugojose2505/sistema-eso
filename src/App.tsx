@@ -2,6 +2,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./layout";
 import ListCosmeticsPage from "./pages/Cosmetics";
 import CosmeticDetailsPage from "./pages/CosmeticDetail";
+import LoginPage from "./pages/login";
+import RegisterPage from "./pages/Register";
 
 
 const router = createBrowserRouter([
@@ -13,6 +15,15 @@ const router = createBrowserRouter([
       { path: "cosmetic/:id", element: <CosmeticDetailsPage /> },
     ],
   },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
+  }
+
 ]);
 
 export default function App() {
