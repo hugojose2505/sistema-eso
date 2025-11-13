@@ -68,8 +68,6 @@ export default function ListCosmeticsPage() {
         limit: 20,
       });
 
-      console.log("data", response);
-
       setCosmetics(response.data);
       setPage(response.page);
       setIsLastPage(response.page >= response.totalPages);
@@ -110,7 +108,6 @@ export default function ListCosmeticsPage() {
 
   const isFirstPage = page <= 1;
 
-  console.log("cosmetics", cosmetics);
 
 
   return (
@@ -236,7 +233,7 @@ export default function ListCosmeticsPage() {
                         if (!isFirstPage) setPage((p) => p - 1);
                       }}
 
-                      
+
                     />
                   </PaginationItem>
 

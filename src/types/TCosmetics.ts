@@ -9,7 +9,10 @@ export type TCosmetic = {
   isOnSale: boolean;
   isPromo: boolean;
   price: number;
-  releaseDate?: string; 
+  releaseDate?: string;
+  lastSyncAt?: string;
+  externalId: string;
+  isOwned: boolean;
 };
 
 export type PaginatedCosmeticsResponse = {
