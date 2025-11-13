@@ -17,8 +17,8 @@ export default function AppLayout() {
       <SidebarInset>
         <div className="flex h-14 shrink-0 items-center justify-between border-b px-4 bg-[#4c4c4c]">
           <div className="flex flex-row gap-4">
-            <SidebarTrigger className="-ml-1 text-[#33cc99]" />
-            <h1 className="text-lg font-semibold text-[#33cc99]">{selectedItemNavBar}</h1>
+            <SidebarTrigger className="-ml-1 text-white" />
+            <h1 className="text-lg font-semibold text-white">{selectedItemNavBar}</h1>
           </div>
 
           <img src={logoProlog} alt="Prolog" className="h-12  w-auto" />

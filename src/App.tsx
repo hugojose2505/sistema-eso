@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./layout";
-import HomePage from "./pages/home";
 import CosmeticsPage from "./pages/Cosmetics";
+import ListCosmeticsPage from "./pages/Cosmetics";
 
 
 const router = createBrowserRouter([
@@ -9,8 +9,8 @@ const router = createBrowserRouter([
     path: "/",
     element: <AppLayout />,
     children: [
-      { index: true, element: <HomePage /> },
-      { path: "tires/:id", element: <CosmeticsPage /> },
+      { index: true, element: <ListCosmeticsPage /> },
+      { path: "cosmetics/:id", element: <CosmeticsPage /> },
     ],
   },
 ]);
