@@ -1,4 +1,5 @@
 import { GiClothes } from "react-icons/gi";
+import { FaUsers } from "react-icons/fa";
 import esoLogo from "@/assets/icone.png";
 
 export const data = {
@@ -20,7 +21,7 @@ export const data = {
     {
       title: "Usuários",
       to: "/users",
-      icon: GiClothes,
+      icon: FaUsers,
     },
   ],
 };
