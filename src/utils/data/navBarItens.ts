@@ -1,7 +1,5 @@
-
-import { GiFlatTire } from "react-icons/gi";
+import { GiClothes } from "react-icons/gi";
 import esoLogo from "@/assets/icone.png";
-
 
 export const data = {
   teams: [
@@ -17,7 +15,7 @@ export const data = {
     {
       title: "Cosmeticos",
       to: "/",
-      icon: GiFlatTire,
+      icon: GiClothes,
     },
   ],
 };

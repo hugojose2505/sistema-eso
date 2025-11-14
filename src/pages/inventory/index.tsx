@@ -1,14 +1,23 @@
 import { useEffect, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { Loader2, Package } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
 import { getInventory, type InventoryItem } from "@/services/inventory";
+import { refundCosmetic } from "@/services/purchase/refund";
 
 export default function InventoryPage() {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [refundingId, setRefundingId] = useState<string | null>(null);
 
   const fetchInventory = async () => {
     try {
@@ -33,7 +42,25 @@ export default function InventoryPage() {
     return d.toLocaleString("pt-BR");
   };
 
-  console.log("INVENTORY ITEMS:", items);
+  async function handleRefund(item: InventoryItem) {
+    try {
+      setRefundingId(item.id);
+
+      await refundCosmetic(item.cosmetic.id);
+
+      setItems((prev) => prev.filter((i) => i.id !== item.id));
+
+      toast.success(`"${item.cosmetic.name}" vendido com sucesso!`);
+    } catch (error: any) {
+      console.error("Erro ao vender item:", error);
+      const msg =
+        error?.response?.data?.message ?? "Não foi possível vender este item.";
+      toast.error(msg);
+    } finally {
+      setRefundingId(null);
+    }
+  }
+
   return (
     <>
       <Toaster position="top-right" />
@@ -77,8 +104,13 @@ export default function InventoryPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {items.map((item) => {
               const c = item.cosmetic;
+              const isRefunding = refundingId === item.id;
+
               return (
-                <Card key={item.id} className="bg-white hover:shadow-md transition-shadow">
+                <Card
+                  key={item.id}
+                  className="bg-white hover:shadow-md transition-shadow"
+                >
                   <CardHeader className="flex flex-row gap-4">
                     <div className="w-20 h-20 rounded-md overflow-hidden bg-muted flex items-center justify-center shrink-0">
                       {c.imageUrl ? (
@@ -145,6 +177,25 @@ export default function InventoryPage() {
                         : item.source}
                     </p>
                   </CardContent>
+
+                  <CardFooter className="flex justify-end">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      disabled={isRefunding}
+                      onClick={() => handleRefund(item)}
+                      className="gap-2"
+                    >
+                      {isRefunding ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Vendendo...
+                        </>
+                      ) : (
+                        <>Vender</>
+                      )}
+                    </Button>
+                  </CardFooter>
                 </Card>
               );
             })}
