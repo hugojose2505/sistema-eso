@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, User as UserIcon } from "lucide-react";
+import { LogOut, Package } from "lucide-react";
 
 export default function AppLayout() {
   const { selectedItemNavBar } = useItemNavBar();
@@ -68,7 +68,7 @@ export default function AppLayout() {
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none">
                   <div className="flex items-center gap-2 text-white">
-                    <Avatar className="h-8 w-8 border border-white/30">
+                    <Avatar className="h-8 w-8 border border-white/30 text-black">
                       <AvatarImage src={user.avatarUrl} alt={user.name} />
                       <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
@@ -88,15 +88,26 @@ export default function AppLayout() {
                       )}
                     </div>
                   </DropdownMenuLabel>
+
                   <DropdownMenuSeparator />
+
                   <DropdownMenuItem
-                    onClick={() => navigate("/profile")}
+                    onClick={() => navigate("/inventory")}
                     className="cursor-pointer"
                   >
-                    <UserIcon className="mr-2 h-4 w-4" />
-                    <span>Meu perfil</span>
+                    <Package className="mr-2 h-4 w-4" />
+                    <span>Meus cosméticos</span>
                   </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => navigate("/transactions")}
+                    className="cursor-pointer"
+                  >
+                    <Package className="mr-2 h-4 w-4" />
+                    <span>Histórico de transações</span>
+                  </DropdownMenuItem>
+
                   <DropdownMenuSeparator />
+
                   <DropdownMenuItem
                     onClick={handleLogout}
                     className="cursor-pointer text-red-600 focus:text-red-600"
@@ -107,7 +118,6 @@ export default function AppLayout() {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-
           </div>
         </div>
 

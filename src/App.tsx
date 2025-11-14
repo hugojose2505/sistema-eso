@@ -4,6 +4,8 @@ import ListCosmeticsPage from "./pages/Cosmetics";
 import CosmeticDetailsPage from "./pages/CosmeticDetail";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/Register";
+import InventoryPage from "./pages/inventory";
+import TransactionHistoryPage from "./pages/Transactions";
 
 
 const router = createBrowserRouter([
@@ -13,6 +15,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <ListCosmeticsPage /> },
       { path: "cosmetic/:id", element: <CosmeticDetailsPage /> },
+      {path: "inventory", element: <InventoryPage />},
+      {path: "transactions", element: <TransactionHistoryPage /> }
     ],
   },
   {
@@ -23,6 +27,7 @@ const router = createBrowserRouter([
     path: "/register",
     element: <RegisterPage />,
   }
+
 
 ]);
 
