@@ -16,6 +16,7 @@ import InventoryPage from "./pages/inventory";
 import TransactionHistoryPage from "./pages/Transactions";
 
 import { useAuthStore } from "@/store/useAuthStore";
+import PublicUsersPage from "./pages/users";
 
 function RequireAuth() {
   const user = useAuthStore((s) => s.user);
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { index: true, element: <ListCosmeticsPage /> },
+      { path: "users", element: <PublicUsersPage /> },
       {
         element: <RequireAuth />,
         children: [

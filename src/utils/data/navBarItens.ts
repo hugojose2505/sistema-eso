@@ -17,5 +17,10 @@ export const data = {
       to: "/",
       icon: GiClothes,
     },
+    {
+      title: "Usuários",
+      to: "/users",
+      icon: GiClothes,
+    },
   ],
 };
