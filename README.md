@@ -1,74 +1,46 @@
-# React + TypeScript + Vite
+# ESO Front End
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interface web do ESO, desenvolvida com React e empacotada com Vite.
+A aplicação consome a API do backend ESO e utiliza ShadCN UI + Tailwind CSS para estilização e componentes.
 
-Currently, two official plugins are available:
+# Deploy
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Toda a infraestrutura do ESO foi publicada em ambiente cloud:
+- O backend (API NestJS) e o banco de dados PostgreSQL foram deployados na plataforma Render, garantindo disponibilidade e gerenciamento simplificado de infraestrutura.
+- O frontend (React + Vite + ShadCN + Tailwind) foi deployado na Vercel, oferecendo build rápido, CDN distribuída e ótimo desempenho para a interface web.
+- A aplicação web pode ser acessada através do seguinte link:  https://sistema-eso.vercel.app/
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tecnologias
 
-## Expanding the ESLint configuration
+- React (SPA)
+- Vite (build e dev server)
+- TypeScript
+- ShadCN UI
+- Tailwind CSS
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Fluxo de inicialização
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Para realizar a execução do projeto é recomendado realizar os seguintes passos:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Local:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Instale as dependências:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# sistema-eso
+- npm install
+- npm run dev
+---
+
+## Configuração de ambiente
+
+Na **raiz do projeto**, é necessário criar um arquivo .env de variáveis de ambiente:
+
+- `.env`  usado para execução **local**
+
+```env
+# Arquivo: .env 
+
+VITE_API_URL_BACK_ESO=http://localhost:3001
