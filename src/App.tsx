@@ -17,6 +17,7 @@ import TransactionHistoryPage from "./pages/Transactions";
 
 import { useAuthStore } from "@/store/useAuthStore";
 import PublicUsersPage from "./pages/users";
+import NotFoundComponent from "./components/NotFound";
 
 function RequireAuth() {
   const user = useAuthStore((s) => s.user);
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: "*", element: <NotFoundComponent /> },
   {
     path: "/login",
     element: <LoginPage />,
