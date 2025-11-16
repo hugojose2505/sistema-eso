@@ -1,5 +1,6 @@
 import { GiClothes } from "react-icons/gi";
 import { FaUsers } from "react-icons/fa";
+import { IoStorefront } from "react-icons/io5";
 import esoLogo from "@/assets/icone.png";
 
 export const data = {
@@ -22,6 +23,11 @@ export const data = {
       title: "Usuários",
       to: "/users",
       icon: FaUsers,
+    },
+    {
+      title: "Bundles",
+      to: "/bundles",
+      icon: IoStorefront,
     },
   ],
 };

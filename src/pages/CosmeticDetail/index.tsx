@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
-import { ArrowLeft, Loader2, ShoppingBag, CheckCircle2 } from "lucide-react";
-
+import { ArrowLeft, Loader2, ShoppingBag, CheckCircle2 } from "lucide-react"; 
 import { getCosmeticById } from "@/services/cosmetics/getById";
 import type { TCosmetic } from "@/types/TCosmetics";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@/store/useAuthStore";
 import { purchaseCosmetic } from "@/services/purchase/buy";
+import { getInventory } from "@/services/inventory";
+import { refundCosmetic } from "@/services/purchase/refund";
 
 export default function CosmeticDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -20,12 +21,13 @@ export default function CosmeticDetailsPage() {
   const [cosmetic, setCosmetic] = useState<TCosmetic | null>(null);
   const [loading, setLoading] = useState(false);
   const [buying, setBuying] = useState(false);
+  const [refunding, setRefunding] = useState(false);
+  const [ownedFromInventory, setOwnedFromInventory] = useState(false);
 
   async function fetchCosmetic() {
     try {
       setLoading(true);
       const data = await getCosmeticById(id || "");
-      console.log("DETAIL COSMETIC", data);
       setCosmetic(data);
     } catch (error) {
       console.error("Erro ao buscar cosmético:", error);
@@ -39,6 +41,24 @@ export default function CosmeticDetailsPage() {
     if (!id) return;
     fetchCosmetic();
   }, [id]);
+
+  useEffect(() => {
+    if (!user || !cosmetic) return;
+
+    const checkInventory = async () => {
+      try {
+        const items = await getInventory();
+        const owned = items.some((item) => item.cosmetic.id === cosmetic.id);
+        setOwnedFromInventory(owned);
+      } catch (error) {
+        console.error("Erro ao checar inventário:", error);
+      }
+    };
+
+    checkInventory();
+  }, [user, cosmetic]);
+
+  const isOwned = cosmetic ? (cosmetic.isOwned || ownedFromInventory) : false;
 
   const handleBack = () => {
     navigate(-1);
@@ -64,17 +84,42 @@ export default function CosmeticDetailsPage() {
 
       toast.success(result.message || "Item adquirido com sucesso!");
 
-      setCosmetic((prev) =>
-        prev ? { ...prev, isOwned: true } : prev
-      );
+      setCosmetic((prev) => (prev ? { ...prev, isOwned: true } : prev));
+      setOwnedFromInventory(true);
     } catch (error: any) {
       console.error("Erro ao adquirir cosmético:", error);
       const msg =
-        error?.response?.data?.message ||
-        "Erro ao tentar adquirir o item.";
+        error?.response?.data?.message || "Erro ao tentar adquirir o item.";
       toast.error(msg);
     } finally {
       setBuying(false);
+    }
+  };
+
+  const handleRefund = async () => {
+    if (!cosmetic) return;
+
+    if (!user) {
+      toast.error("Você precisa estar logado para vender um item.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setRefunding(true);
+      const res = await refundCosmetic(cosmetic.id);
+
+      toast.success(res.message || "Item vendido com sucesso!");
+
+      setCosmetic((prev) => (prev ? { ...prev, isOwned: false } : prev));
+      setOwnedFromInventory(false);
+    } catch (error: any) {
+      console.error("Erro ao vender cosmético:", error);
+      const msg =
+        error?.response?.data?.message || "Erro ao tentar vender o item.";
+      toast.error(msg);
+    } finally {
+      setRefunding(false);
     }
   };
 
@@ -151,6 +196,15 @@ export default function CosmeticDetailsPage() {
                     {cosmetic.isPromo && (
                       <Badge variant="outline">Destaque</Badge>
                     )}
+
+                    {isOwned && (
+                      <Badge
+                        variant="outline"
+                        className="bg-emerald-50 text-emerald-700 border-emerald-200"
+                      >
+                        Já adquirido
+                      </Badge>
+                    )}
                   </div>
 
                   <CardTitle className="text-2xl">{cosmetic.name}</CardTitle>
@@ -196,7 +250,7 @@ export default function CosmeticDetailsPage() {
                         Você possui este item?
                       </p>
                       <p className="font-semibold flex items-center gap-1">
-                        {cosmetic.isOwned ? (
+                        {isOwned ? (
                           <>
                             <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                             Sim
@@ -209,10 +263,24 @@ export default function CosmeticDetailsPage() {
                   </div>
 
                   <div className="pt-4 flex flex-wrap gap-3">
-                    {cosmetic.isOwned ? (
-                      <Button disabled className="gap-2">
-                        <CheckCircle2 className="w-4 h-4" />
-                        Já adquirido
+                    {isOwned ? (
+                      <Button
+                        variant="outline"
+                        className="gap-2 border-red-300 text-red-600"
+                        onClick={handleRefund}
+                        disabled={refunding}
+                      >
+                        {refunding ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Vendendo...
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag className="w-4 h-4" />
+                            Vender
+                          </>
+                        )}
                       </Button>
                     ) : (
                       <Button

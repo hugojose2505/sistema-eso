@@ -14,6 +14,7 @@ type AuthState = {
   setUser: (user: User | null) => void;
   logout: () => void;
   initAuth: () => void;
+  updateBalance: (balance: number) => void;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -28,6 +29,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user });
   },
 
+  updateBalance: (balance) =>
+    set((state) =>
+      state.user ? { user: { ...state.user, vbucksBalance: balance } } : state
+    ),
+
   logout: () => {
     Cookies.remove("accessToken");
     localStorage.removeItem("user");
@@ -37,7 +43,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   initAuth: () => {
     const token = Cookies.get("accessToken");
     if (!token) {
-      // sem token, não tem user
       set({ user: null });
       return;
     }

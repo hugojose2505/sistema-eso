@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, Package } from "lucide-react";
+import { LogOut, Package, Coins } from "lucide-react"; 
 
 export default function AppLayout() {
   const { selectedItemNavBar } = useItemNavBar();
@@ -55,6 +55,17 @@ export default function AppLayout() {
           </div>
 
           <div className="flex items-center gap-4">
+            {user && (
+              <div className="flex items-center gap-2 mr-2">
+                <div className="flex items-center gap-1 rounded-full bg-yellow-500/10 border border-yellow-400/40 px-3 py-1">
+                  <Coins className="w-4 h-4 text-yellow-300" />
+                  <span className="text-xs font-semibold text-yellow-100">
+                    {user.vbucksBalance?.toLocaleString("pt-BR")} V-Bucks
+                  </span>
+                </div>
+              </div>
+            )}
+
             {!user ? (
               <Button
                 variant="outline"

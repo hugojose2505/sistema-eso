@@ -14,6 +14,7 @@ type LoginResponse = {
     name: string;
     email: string;
     avatarUrl?: string;
+    vbucksBalance: number; 
   };
 };
 
@@ -21,7 +22,6 @@ export async function loginRequest(
   payload: LoginPayload
 ): Promise<LoginResponse> {
   const response = await Axios.post<LoginResponse>("/auth/login", payload);
-
   const data = (response as any).data ?? response;
 
   if (!data?.accessToken) {
@@ -30,12 +30,10 @@ export async function loginRequest(
   }
 
   Axios.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
-  console.log("TOKEN", data.accessToken);
-
   Cookies.set("accessToken", data.accessToken, { path: "/" });
 
   const { setUser } = useAuthStore.getState();
-  setUser(data.user);
+  setUser(data.user); 
 
-  return data as LoginResponse;
+  return data;
 }

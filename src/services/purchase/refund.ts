@@ -1,4 +1,5 @@
 import { Axios } from "@/config/axios";
+import { useAuthStore } from "@/store/useAuthStore";
 
 type RefundResponse = {
   success: boolean;
@@ -14,6 +15,8 @@ export async function refundCosmetic(
   });
 
   const data = (response as any).data ?? response;
+  console.log("Refund response data:", data);
+  useAuthStore.getState().updateBalance(data.balance);
 
   return data as RefundResponse;
 }

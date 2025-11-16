@@ -6,7 +6,6 @@ import {
   Outlet,
   useLocation,
 } from "react-router-dom";
-
 import AppLayout from "./layout";
 import ListCosmeticsPage from "./pages/Cosmetics";
 import CosmeticDetailsPage from "./pages/CosmeticDetail";
@@ -14,10 +13,11 @@ import LoginPage from "./pages/login";
 import RegisterPage from "./pages/Register";
 import InventoryPage from "./pages/inventory";
 import TransactionHistoryPage from "./pages/Transactions";
-
 import { useAuthStore } from "@/store/useAuthStore";
 import PublicUsersPage from "./pages/users";
 import NotFoundComponent from "./components/NotFound";
+import BundlesPage from "./pages/bundle";
+import BundleDetailPage from "./pages/bundleDetail";
 
 function RequireAuth() {
   const user = useAuthStore((s) => s.user);
@@ -37,11 +37,13 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <ListCosmeticsPage /> },
       { path: "users", element: <PublicUsersPage /> },
+      { path: "bundles", element: <BundlesPage /> },
       {
         element: <RequireAuth />,
         children: [
           { path: "cosmetic/:id", element: <CosmeticDetailsPage /> },
           { path: "inventory", element: <InventoryPage /> },
+          { path: "bundles/:id", element: <BundleDetailPage /> },
           { path: "transactions", element: <TransactionHistoryPage /> },
         ],
       },
